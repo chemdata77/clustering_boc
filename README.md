@@ -1,1 +1,1 @@
-# clusering_mini_knn
+# clusering_mini
