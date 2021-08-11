@@ -3,12 +3,12 @@ import h5py
 import numpy as np
 
 import random
-from sklearn import svm
+#from sklearn import svm
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
-file_cnt = 99
+file_cnt = 5
 step_cnt = 1e6
 
 dataset = None
@@ -118,7 +118,7 @@ for epoch in range(2000):  # loop over the dataset multiple times
         # inputs = torch.tensor(inputs, dtype=torch.float32)
         outputs = net(inputs.float())
         
-        print('qqqqqqq',outputs)       
+        #print('qqqqqqq',outputs)       
 
         loss = criterion(outputs, labels)
         loss.backward()
