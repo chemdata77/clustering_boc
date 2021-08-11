@@ -110,18 +110,18 @@ for k in data_dict.keys():
     if len(k) == 2:
        ax = axs[ax_idx]
        ax_idx+=1
-       fig_X = [[i] for i in range(10000)]
-       fig_Y = [0 for i in range(10000)]
+       fig_X = [[i] for i in range(4000)]
+       fig_Y = [0 for i in range(4000)]
        for x in X:
            fig_Y[int(x[0]*1000)]+=1
-       non_zero_X = [fig_X[i] for i in range(10000) if fig_Y[i] >= int(max(fig_Y)/20)]
-       non_zero_Y = [fig_Y[i] for i in range(10000) if fig_Y[i] >= int(max(fig_Y)/20)]
+       non_zero_X = [fig_X[i] for i in range(4000) if fig_Y[i] >= int(max(fig_Y)/20)]
+       non_zero_Y = [fig_Y[i] for i in range(4000) if fig_Y[i] >= int(max(fig_Y)/20)]
        ax.set_title(k[0] + '-' + k[1])
        ax.plot(list(np.array(non_zero_X)/1000.0), non_zero_Y)
        # print(results[0][4])
        for i in range(len(clst_dict[k])):
            #plt.axvline(x=clst_dict[0][i][0],ls="-",c="green")#添加垂直直线
-           ax.plot([clst_dict[k][i][0]/1000, clst_dict[k][i][0]/1000], [0, max(non_zero_Y)], linestyle=':')
+           ax.plot([clst_dict[k][i][0], clst_dict[k][i][0]], [0, max(non_zero_Y)], linestyle=':')
        
        
 
@@ -145,10 +145,10 @@ print(total_clst_cnt)
 
 axs[5].set_ylabel('pair count')
 axs[7].set_xlabel('pair distance, ' + r'$\AA$')
-plt.savefig('./data/kmeans/clst_kmeans.jpg')
+plt.savefig('./data/kmeans/clst_kmeans_v2.jpg')
 plt.show()
 
 #with open('/data/bak/qzh/e2e_reaction_test/julei_mini/shuju/slht_fig_data_02.txt', 'wb') as fp:
     #pickle.dump(fig_data, fp) 
-with open('./data/kmeans/clst_dict_kmeans.dct', 'wb') as fp:
+with open('./data/kmeans/clst_dict_kmeans_v2.dct', 'wb') as fp:
     pickle.dump(clst_dict, fp)
