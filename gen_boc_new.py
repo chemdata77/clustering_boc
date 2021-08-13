@@ -8,7 +8,7 @@ import numpy as np
 from ase.db import connect
 
 import pickle
-with open('./shuju/clst_dict_mini.dct', 'rb') as fp:
+with open('./data/kmeans/clst_dict_kmeans.dct', 'rb') as fp:
     clst_dict = pickle.load(fp)
 
 clst_tuple_list = []
@@ -69,7 +69,7 @@ def cal_clst_lst(atoms):
 
 qm9_boc_lst = []
 # we can check C2H6 result, if it is the same with the BOC paper 
-db = connect('./qm9.db')
+db = connect('./data/qm9.db')
 # 16.1% memory usage of a 128G machine
 rows = list(db.select(sort='id'))
 
@@ -92,7 +92,7 @@ pool = multiprocessing.Pool(24)
 qm9_boc_lst = pool.map(multi_thd_func, rows)
 
 import pickle
-with open('./shuju/qm9_id_boc_mini.lst', 'wb') as fp:
+with open('./data/kmeans/qm9_id_boc_mini.lst', 'wb') as fp:
     pickle.dump(qm9_boc_lst, fp)
 
 #print('total stored BoC in qm9_boc_lst.txt is: ', len(qm9_boc_lst))
