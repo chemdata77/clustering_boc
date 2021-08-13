@@ -8,7 +8,9 @@ from sklearn import svm
 from sklearn import tree
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.linear import SGDClassifier
+from sklearn.linear_model import SGDClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 from sklearn.externals import joblib
 
 from sklearn.decomposition import PCA
@@ -38,7 +40,8 @@ except:
     #clf = svm.libsvm(kernel='linear')
     #clf = tree.DecisionTreeClassifier()
     #clf = KNeighborsClassifier(weights='distance')
-    clf = SGDClassifier(loss='hinge',penalty='12',max_iter=5)
+    #clf = SGDClassifier(loss='hinge',penalty='12',max_iter=5)
+    clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3))
 
 batch_size = 1024
 max_test_acc = 0
