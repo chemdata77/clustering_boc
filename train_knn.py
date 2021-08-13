@@ -18,7 +18,7 @@ seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
-file_cnt = 99
+file_cnt = 5
 step_cnt = 1e6
 
 
@@ -30,7 +30,7 @@ import torch.nn.functional as F
 
 try:
     
-    clf = joblib.load('./shuju/model/clf_400_knn.pkl')     
+    clf = joblib.load('./data/model_v2/clf_knn.pkl')     
 except:
     print('初始化模型')
     #clf = svm.LinearSVC()
@@ -69,9 +69,9 @@ for i in range(1, file_cnt+1):
         label.append(int(dataset[j][-1]))
     print(zero_cnt, 'start to cat data')
    
-    pca = PCA(n_components=400)
+    #pca = PCA(n_components=400)
     #pca = KernelPCA(n_components=8, kernel='linear', n_jobs = 2)
-    data = pca.fit_transform(data)
+    #data = pca.fit_transform(data)
    
     if i == 1:
         print('input BoC length is: ', len(dataset[0])-1)
@@ -110,10 +110,7 @@ print(test_labels)
 patience = 10
 cur_pat = patience
 
-
-#clf.fit(train_sets, train_labels.ravel())
-
-for epoch in range(1):  # loop over the dataset multiple times
+for epoch in range(10):  # loop over the dataset multiple times
 	if(cur_pat == 0):
 		break
 	running_loss = 0.0
@@ -150,7 +147,7 @@ for epoch in range(1):  # loop over the dataset multiple times
 		#     print('[%d, %5d] loss: %.6f' %
 		#         (epoch + 1, i + 1, running_loss/1000))
 		#     running_loss = 0.0
-	print("训练集：", accuracy_score(labels,outputs))
+		print("训练集：", accuracy_score(labels,outputs))
 
 # valid
 	with torch.no_grad():
@@ -230,7 +227,7 @@ for epoch in range(1):  # loop over the dataset multiple times
 	print("测试集：", accuracy_score(labels,test_outputs))
 	if accuracy_score(labels,test_outputs) > max_test_acc:
 		max_test_acc = accuracy_score(labels,test_outputs)
-		joblib.dump(clf, './shuju/model/clf_400_knn.pkl') 
+		joblib.dump(clf, './data/model_v2/clf_knn.pkl') 
 
 	#print('l1p1: ' , l1p1 , ' l1p0: ' , l1p0 , ' l0p1: ' , l0p1 , 'l0p0: ' , l0p0)
 
