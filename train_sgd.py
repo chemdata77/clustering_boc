@@ -8,7 +8,9 @@ from sklearn import svm
 from sklearn import tree
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-
+from sklearn.linear_model import SGDClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 from sklearn.externals import joblib
 
 from sklearn.decomposition import PCA
@@ -30,14 +32,16 @@ import torch.nn.functional as F
 
 try:
     
-    clf = joblib.load('./data/model_v2/clf_knn.pkl')     
+    clf = joblib.load('./data/model_v2/clf_sgd.pkl')     
 except:
     print('初始化模型')
     #clf = svm.LinearSVC()
     #clf = svm.SVC(kernel='linear')
     #clf = svm.libsvm(kernel='linear')
     #clf = tree.DecisionTreeClassifier()
-    clf = KNeighborsClassifier(weights='distance')
+    #clf = KNeighborsClassifier(weights='distance')
+    #clf = SGDClassifier(loss='hinge',penalty='12',max_iter=5)
+    clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3))
 
 batch_size = 1024
 max_test_acc = 0
@@ -227,7 +231,7 @@ for epoch in range(10):  # loop over the dataset multiple times
 	print("测试集：", accuracy_score(labels,test_outputs))
 	if accuracy_score(labels,test_outputs) > max_test_acc:
 		max_test_acc = accuracy_score(labels,test_outputs)
-		joblib.dump(clf, './data/model_v2/clf_knn.pkl') 
+		joblib.dump(clf, './data/model_v2/clf_sgd.pkl') 
 
 	#print('l1p1: ' , l1p1 , ' l1p0: ' , l1p0 , ' l0p1: ' , l0p1 , 'l0p0: ' , l0p0)
 
