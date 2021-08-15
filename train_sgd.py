@@ -99,7 +99,7 @@ for i in range(1, file_cnt+1):
     f.close()
     
 
-pca = PCA(n_components=100)
+pca = PCA(n_components=50)
 data_arr = pca.fit_transform(data_arr)
 
 print('Data load finished.')
