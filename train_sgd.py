@@ -20,7 +20,7 @@ seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
-file_cnt = 5
+file_cnt = 1
 step_cnt = 1e6
 
 
@@ -73,7 +73,7 @@ for i in range(1, file_cnt+1):
         label.append(int(dataset[j][-1]))
     print(zero_cnt, 'start to cat data')
    
-    #pca = PCA(n_components=400)
+    #pca = PCA(n_components=100)
     #pca = KernelPCA(n_components=8, kernel='linear', n_jobs = 2)
     #data = pca.fit_transform(data)
    
@@ -99,6 +99,9 @@ for i in range(1, file_cnt+1):
     f.close()
     
 
+pca = PCA(n_components=100)
+data_arr = pca.fit_transform(data_arr)
+
 print('Data load finished.')
  
 train_sets = data_arr[:int(len(data_arr)*0.8)]
@@ -107,7 +110,8 @@ test_sets = data_arr[int(len(data_arr)*0.9):]
 train_labels = label_arr[:int(len(data_arr)*0.8)]
 vali_labels = label_arr[int(len(data_arr)*0.8): int(len(data_arr)*0.9)]
 test_labels = label_arr[int(len(data_arr)*0.9):]
-
+del data_arr
+del label_arr
 print(test_labels)
 
 #min_vali_loss = 9999
@@ -151,7 +155,7 @@ for epoch in range(10):  # loop over the dataset multiple times
 		#     print('[%d, %5d] loss: %.6f' %
 		#         (epoch + 1, i + 1, running_loss/1000))
 		#     running_loss = 0.0
-		print("训练集：", accuracy_score(labels,outputs))
+	print("训练集：", accuracy_score(labels,outputs))
 
 # valid
 	with torch.no_grad():
