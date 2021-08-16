@@ -5,6 +5,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
+from sklearn.neighbors import KNeighborsClassifier
 
 seed = 1234
 random.seed(seed)
@@ -62,7 +63,8 @@ del data_arr
 del label_arr
 print(test_labels)
 
-clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3))
+#clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3))
+clf = KNeighborsClassifier(weights='distance')
 clf.fit(train_sets, train_labels)
 outputs = clf.predict(train_sets) 
 print("训练集：", accuracy_score(train_labels,outputs))
