@@ -6,7 +6,9 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.neighbors import KNeighborsClassifier
-
+from sklearn import svm
+from sklearn import tree
+from sklearn.svm import LinearSVC
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
@@ -59,15 +61,20 @@ train_sets = data_arr[:int(len(data_arr)*0.9)]
 test_sets = data_arr[int(len(data_arr)*0.9):]
 train_labels = label_arr[:int(len(data_arr)*0.9)]
 test_labels = label_arr[int(len(data_arr)*0.9):]
-del data_arr
-del label_arr
-print(test_labels)
 
 #clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3))
-clf = KNeighborsClassifier(weights='distance')
-clf.fit(train_sets, train_labels)
-outputs = clf.predict(train_sets) 
-print("训练集：", accuracy_score(train_labels,outputs))
+#clf = KNeighborsClassifier(weights='distance')
+clf1 = svm.LinearSVC()
+clf2 = svm.SVC(kernel='linear')
+clf3 = make_pipeline(StandardScaler(),LinearSVC(random_state=0, tol=1e-5))
+clf4 = tree.DecisionTreeClassifier()
 
-test_outputs = clf.predict(test_sets) 
-print("测试集：", accuracy_score(test_labels,test_outputs))
+clf1.fit(train_sets, train_labels)
+
+outputs1 = clf1.predict(train_sets) 
+print("训练集1：", accuracy_score(train_labels,outputs1))
+test_outputs1 = clf1.predict(test_sets) 
+print("测试集1：", accuracy_score(test_labels,test_outputs1))
+
+
+
