@@ -5,6 +5,11 @@ from sklearn.metrics import accuracy_score
 from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import svm
+from sklearn import tree
+from sklearn.svm import LinearSVC
+from sklearn.decomposition import PCA
 import argparse 
 seed = 1234
 random.seed(seed)
@@ -12,7 +17,6 @@ np.random.seed(seed)
 
 def load_data():
     global cur_file_id, BoC_size, data_arr, label_arr
-
     f = h5py.File('./data/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
     print('start to load data.')
     dataset = f['dset1'][:]
@@ -50,7 +54,7 @@ def create_model(s):
     if s == 'SDG':
         clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3))
     elif s == 'KNN':
-        clf = KNeighborsClassifier(weights='distance')
+        clf = KNeighborsClassifier(n_neighbors=6, weights='distance')
     elif s == 'Tree':
         clf = tree.DecisionTreeClassifier()
     elif s == 'LinearSVC':
@@ -61,18 +65,20 @@ def create_model(s):
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Molecular autoencoder network')
-    parser.add_argument('--model', type=str, default='SDG',
+    parser.add_argument('model', type=str, default='SDG',
             help='choose the trained model.please enter: SDG, KNN, Tree, LinearSVC, or SVC')
 
     
     return parser.parse_args()
 
 def main():
-    
+    global cur_file_id, BoC_size, data_arr, label_arr
     for i in range(5):
         load_data()
     print('Data load finished.')
-
+    
+    pca = PCA(n_components=2)
+    data_arr = pca.fit_transform(data_arr)
     train_sets = data_arr[:int(len(data_arr)*0.9)]
     test_sets = data_arr[int(len(data_arr)*0.9):]
     train_labels = label_arr[:int(len(data_arr)*0.9)]
@@ -89,6 +95,7 @@ def main():
     print("测试集：", accuracy_score(test_labels,test_outputs))
 
 if __name__ == "__main__":
+    #global cur_file_id, BoC_size, data_arr, label_arr
     cur_file_id = 1
     BoC_size = 0
     dataset = None
