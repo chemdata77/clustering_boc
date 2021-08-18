@@ -18,7 +18,7 @@ np.random.seed(seed)
 
 def load_data():
     global cur_file_id, BoC_size, data_arr, label_arr
-    f = h5py.File('./data/kmeans/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
+    f = h5py.File('./data/meanshift/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
     print('start to load data.')
     dataset = f['dset1'][:]
     print(len(dataset),len(dataset[0]))
@@ -76,7 +76,7 @@ def get_arguments():
 
 def main():
     global cur_file_id, BoC_size, data_arr, label_arr
-    for i in range(1):
+    for i in range(5):
         load_data()
     print('Data load finished.')
     
