@@ -9,7 +9,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 from sklearn import tree
 from sklearn.svm import LinearSVC
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, KernelPCA
+from sklearn.kernel_approximation import RBFSampler
 import argparse 
 seed = 1234
 random.seed(seed)
@@ -51,10 +52,11 @@ def load_data():
 
 def create_model(s):
     print('初始化'+s+'模型')
-    if s == 'SDG':
-        clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3))
+    if s == 'SGD':
+        clf = make_pipeline(StandardScaler(), SGDClassifier(early_stopping=True, validation_fraction=0.9, max_iter=2000, tol=1e-3))
     elif s == 'KNN':
-        clf = KNeighborsClassifier(n_neighbors=6, weights='distance')
+        #clf = make_pipeline(StandardScaler(),KNeighborsClassifier())
+        clf = KNeighborsClassifier()
     elif s == 'Tree':
         clf = tree.DecisionTreeClassifier()
     elif s == 'LinearSVC':
@@ -65,20 +67,24 @@ def create_model(s):
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Molecular autoencoder network')
-    parser.add_argument('model', type=str, default='SDG',
-            help='choose the trained model.please enter: SDG, KNN, Tree, LinearSVC, or SVC')
+    parser.add_argument('model', type=str, default='SGD',
+            help='choose the trained model.please enter: SGD, KNN, Tree, LinearSVC, or SVC')
 
     
     return parser.parse_args()
 
 def main():
     global cur_file_id, BoC_size, data_arr, label_arr
-    for i in range(5):
+    for i in range(1):
         load_data()
     print('Data load finished.')
     
-    pca = PCA(n_components=2)
+    pca = PCA(n_components=50)
+    #pca = KernelPCA(n_components=5, kernel='linear')
     data_arr = pca.fit_transform(data_arr)
+    #rbf_feature = RBFSampler(gamma=1, random_state=1)
+    #data_arr = rbf_feature.fit_transform(data_arr)
+   
     train_sets = data_arr[:int(len(data_arr)*0.9)]
     test_sets = data_arr[int(len(data_arr)*0.9):]
     train_labels = label_arr[:int(len(data_arr)*0.9)]
@@ -95,7 +101,6 @@ def main():
     print("测试集：", accuracy_score(test_labels,test_outputs))
 
 if __name__ == "__main__":
-    #global cur_file_id, BoC_size, data_arr, label_arr
     cur_file_id = 1
     BoC_size = 0
     dataset = None
