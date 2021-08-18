@@ -18,7 +18,7 @@ seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
-file_cnt = 5
+file_cnt = 1
 step_cnt = 1e6
 
 

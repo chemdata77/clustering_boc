@@ -80,8 +80,8 @@ def multi_thd_func(row):
     at = row.toatoms()
     boc = cal_clst_lst(at)
     if(str(at.symbols) == 'C2H6'):
-        print('C2H6 BoC is: ', boc)
-        print('length of BoC is: ', len(boc))
+        #print('C2H6 BoC is: ', boc)
+        #print('length of BoC is: ', len(boc))
         for i in range(len(boc)):
             if boc[i] != 0:
                 print(clst_tuple_list[i][0], boc[i])
