@@ -20,7 +20,7 @@ def load_data():
     global cur_file_id, BoC_size, data_arr, label_arr
     f = h5py.File('./data/kmeans/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
     print('start to load data.')
-    dataset = f['dset1'][:1000000]
+    dataset = f['dset1'][:]
     print(len(dataset),len(dataset[0]))
 
     print('start to shuffle data.')
@@ -60,7 +60,8 @@ def create_model(s):
     elif s == 'Tree':
         clf = tree.DecisionTreeClassifier()
     elif s == 'LinearSVC':
-        clf = make_pipeline(StandardScaler(),LinearSVC(random_state=0, tol=1e-5))
+        clf = svm.LinearSVC()
+        #clf = make_pipeline(StandardScaler(),LinearSVC(random_state=0, tol=1e-5,max_iter=2000))
     elif s == 'SVC':
         clf = svm.SVC(kernel='linear')
     return clf
