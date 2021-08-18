@@ -75,13 +75,13 @@ def get_arguments():
 
 def main():
     global cur_file_id, BoC_size, data_arr, label_arr
-    for i in range(1):
+    for i in range(5):
         load_data()
     print('Data load finished.')
     
-    pca = PCA(n_components=50)
+    #pca = PCA(n_components=50)
     #pca = KernelPCA(n_components=5, kernel='linear')
-    data_arr = pca.fit_transform(data_arr)
+    #data_arr = pca.fit_transform(data_arr)
     #rbf_feature = RBFSampler(gamma=1, random_state=1)
     #data_arr = rbf_feature.fit_transform(data_arr)
    
