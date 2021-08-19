@@ -20,7 +20,7 @@ np.random.seed(seed)
 
 def load_data():
     global cur_file_id, BoC_size, data_arr, label_arr
-    f = h5py.File('./data/meanshift/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
+    f = h5py.File('./data/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
     print('start to load data.')
     dataset = f['dset1'][:]
     print(len(dataset),len(dataset[0]))
@@ -82,9 +82,9 @@ def main():
         load_data()
     print('Data load finished.')
     
-    #pca = PCA(n_components=500)
+    pca = PCA(n_components=99)
     #pca = KernelPCA(n_components=5, kernel='linear')
-    #data_arr = pca.fit_transform(data_arr)
+    data_arr = pca.fit_transform(data_arr)
     #rbf_feature = RBFSampler(gamma=1, random_state=1)
     #data_arr = rbf_feature.fit_transform(data_arr)
    
