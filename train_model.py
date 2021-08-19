@@ -12,13 +12,15 @@ from sklearn.svm import LinearSVC
 from sklearn.decomposition import PCA, KernelPCA
 from sklearn.kernel_approximation import RBFSampler
 import argparse 
+from sklearn.model_selection import cross_val_score
+
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
 def load_data():
     global cur_file_id, BoC_size, data_arr, label_arr
-    f = h5py.File('./data/meanshift/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
+    f = h5py.File('./data/kmeans/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
     print('start to load data.')
     dataset = f['dset1'][:]
     print(len(dataset),len(dataset[0]))
@@ -60,7 +62,7 @@ def create_model(s):
     elif s == 'Tree':
         clf = tree.DecisionTreeClassifier()
     elif s == 'LinearSVC':
-        clf = svm.LinearSVC()
+        clf = svm.LinearSVC(max_iter=4000)
         #clf = make_pipeline(StandardScaler(),LinearSVC(random_state=0, tol=1e-5,max_iter=2000))
     elif s == 'SVC':
         clf = svm.SVC(kernel='linear')
@@ -76,7 +78,7 @@ def get_arguments():
 
 def main():
     global cur_file_id, BoC_size, data_arr, label_arr
-    for i in range(5):
+    for i in range(1):
         load_data()
     print('Data load finished.')
     
@@ -86,20 +88,23 @@ def main():
     #rbf_feature = RBFSampler(gamma=1, random_state=1)
     #data_arr = rbf_feature.fit_transform(data_arr)
    
-    train_sets = data_arr[:int(len(data_arr)*0.9)]
-    test_sets = data_arr[int(len(data_arr)*0.9):]
-    train_labels = label_arr[:int(len(data_arr)*0.9)]
-    test_labels = label_arr[int(len(data_arr)*0.9):]
+    #train_sets = data_arr[:int(len(data_arr)*0.9)]
+    #test_sets = data_arr[int(len(data_arr)*0.9):]
+    #train_labels = label_arr[:int(len(data_arr)*0.9)]
+    #test_labels = label_arr[int(len(data_arr)*0.9):]
 
     args = get_arguments()
     s=args.model
     clf = create_model(s)
-    clf.fit(train_sets, train_labels)
-    outputs = clf.predict(train_sets) 
-    print("训练集：", accuracy_score(train_labels,outputs))
+    clf.fit(data_arr, label_arr)
+    #outputs = clf.predict(train_sets) 
+    scores = cross_val_score(clf, data_arr, label_arr,scoring='accuracy', cv=10)
+    print(scores,scores.mean())
+    
+    #print("训练集：", accuracy_score(train_labels,outputs))
 
-    test_outputs = clf.predict(test_sets) 
-    print("测试集：", accuracy_score(test_labels,test_outputs))
+    #test_outputs = clf.predict(test_sets) 
+    #print("测试集：", accuracy_score(test_labels,test_outputs))
 
 if __name__ == "__main__":
     cur_file_id = 1
