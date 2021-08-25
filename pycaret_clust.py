@@ -30,15 +30,10 @@ for k in data_dict.keys():
     exp_clu101 = setup(data, normalize = True, session_id = 123)
     kmeans = create_model('kmeans')
     kmean_results = assign_model(kmeans)
-    kmean_results.head()
 
-    #plot_model(kmeans, plot = 'elbow')
-    #plt.savefig('./data/pycaret/elbow.jpg')
+    plot_model(kmeans, plot = 'elbow',save = True)
 
-    plot_model(kmeans, plot = 'silhouette')
-    #plt.savefig('./data/pycaret/sl.jpg')
-    plot_model(kmeans, plot = 'distribution', feature = 'class')
-    plt.savefig('./data/pycater/dis.jpg')
+    plot_model(kmeans, plot = 'silhouette',save = True)
 
 
     label_unique = []
