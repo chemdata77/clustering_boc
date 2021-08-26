@@ -20,6 +20,9 @@ from sklearn.cluster import Birch, DBSCAN, KMeans, MeanShift, estimate_bandwidth
 from sklearn.metrics import silhouette_score
 import numpy as np
 import random
+from yellowbrick.cluster import intercluster_distance
+from yellowbrick.cluster import silhouette_visualizer
+from yellowbrick.cluster.elbow import kelbow_visualizer
 
 seed = 1234
 random.seed(seed)
@@ -58,19 +61,19 @@ for k in data_dict.keys():
         continue
     # mean-shift
     label_unique = []
-    bandwidth = estimate_bandwidth(X, quantile=0.3, n_samples=10000, random_state=9)
-    ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
-    ms.fit(X)
-    labels = ms.labels_
-    label_unique = np.unique(labels)
-    if(len(label_unique) > 1):
-        print('MS: ', k, len(label_unique), metrics.silhouette_score(X, labels, sample_size=10000), len(X))
-    total_clst_cnt += len(label_unique)
-    clst_dict[k] = ms.cluster_centers_
+    #bandwidth = estimate_bandwidth(X, quantile=0.3, n_samples=10000, random_state=9)
+    #ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+    #ms.fit(X)
+    #labels = ms.labels_
+    #label_unique = np.unique(labels)
+    #if(len(label_unique) > 1):
+        #print('MS: ', k, len(label_unique), metrics.silhouette_score(X, labels, sample_size=10000), len(X))
+    #total_clst_cnt += len(label_unique)
+    #clst_dict[k] = ms.cluster_centers_
 
     #mini-batch k means
-    #best_score = 0
-    #best_clst_cnts = 2
+    best_score = 0
+    best_clst_cnts = 2
     #res = []
     for n_clst in range(2, 100):
         if n_clst > 5 and n_clst % 2 == 0:
@@ -78,34 +81,38 @@ for k in data_dict.keys():
         #km = KMeans(n_clusters=n_clst, random_state=9)
         #y_pred = km.fit_predict(X)
 
-        #brc = Birch(n_clusters = n_clst, threshold = 0.3, branching_factor = 50)
-        #y_pred = brc.fit_predict(X)
+        brc = Birch(n_clusters = n_clst, threshold = 0.3, branching_factor = 50)
+        y_pred = brc.fit_predict(X)
 
         # print(metrics.calinski_harabaz_score(X, y_pred))
-        #slht = metrics.silhouette_score(X, y_pred, sample_size=1000)
+        slht = metrics.silhouette_score(X, y_pred, sample_size=1000)
         #res.append([k, slht])
         # slht = metrics.calinski_harabasz_score(X, y_pred)
-        #if(slht > best_score):
-            #best_score = slht
-            #best_clst_cnts = n_clst
-            #patience = 0
-        #else:
-            #patience += 1
-        #if patience > 5 and n_clst>10:
-            #break
+        if(slht > best_score):
+            best_score = slht
+            best_clst_cnts = n_clst
+            patience = 0
+        else:
+            patience += 1
+        if patience > 5 and n_clst>10:
+            break
         #print('res',res)
     #print('KM: ', k, best_clst_cnts, best_score, len(X))
 
-    #print('brc: ', k, best_clst_cnts, best_score, len(X))
+    print('brc: ', k, best_clst_cnts, best_score, len(X))
     #km = KMeans(n_clusters=best_clst_cnts, random_state=9)
     #y_pred = km.fit_predict(X)
-    #brc = Birch(n_clusters = best_clst_cnts, threshold = 0.3, branching_factor = 50)
-    #y_pred = brc.fit_predict(X)
+    brc = Birch(n_clusters = best_clst_cnts, threshold = 0.3, branching_factor = 50)
+    y_pred = brc.fit_predict(X)
     #fig_data.append(res)
-    #total_clst_cnt += max(best_clst_cnts, len(label_unique))
-    #if best_clst_cnts > len(label_unique):
+    total_clst_cnt += max(best_clst_cnts, len(label_unique))
+    if best_clst_cnts > len(label_unique):
         #clst_dict[k] = km.cluster_centers_
-        #clst_dict[k] = brc.cluster_centers_
+        clst_dict[k] = brc.subcluster_centers_
+    
+    #kelbow_visualizer(brc, X, k=(2,100), outpath="./data/birch/elbow.png")
+    #silhouette_visualizer(brc(best_clst_cnts), X, colors='yellowbrick', outpath="./data/birch/sl.png")
+    #intercluster_distance(brc(best_clst_cnts), X, outpath="./data/birch/inter.png")
 
     if len(k) == 2:
        ax = axs[ax_idx]
@@ -145,10 +152,10 @@ print(total_clst_cnt)
 
 axs[5].set_ylabel('pair count')
 axs[7].set_xlabel('pair distance, ' + r'$\AA$')
-plt.savefig('./data/meanshift/ms.jpg')
+plt.savefig('./data/birch/birch.jpg')
 plt.show()
 
 #with open('/data/bak/qzh/e2e_reaction_test/julei_mini/shuju/slht_fig_data_02.txt', 'wb') as fp:
     #pickle.dump(fig_data, fp) 
-with open('./data/meanshift/clst_dict_ms.dct', 'wb') as fp:
+with open('./data/birch/clst_dict_birch.dct', 'wb') as fp:
     pickle.dump(clst_dict, fp)
