@@ -13,16 +13,16 @@ from sklearn.decomposition import PCA, KernelPCA
 from sklearn.kernel_approximation import RBFSampler
 import argparse 
 from sklearn.model_selection import cross_val_score
-
+from sklearn.ensemble import RandomForestClassifier
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
 def load_data():
     global cur_file_id, BoC_size, data_arr, label_arr
-    f = h5py.File('./data/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
+    f = h5py.File('./data/birch/dataset_new_' + str(cur_file_id) + '.hdf5', 'r')
     print('start to load data.')
-    dataset = f['dset1'][:]
+    dataset = f['dset1'][:1000000]
     print(len(dataset),len(dataset[0]))
 
     print('start to shuffle data.')
@@ -62,10 +62,12 @@ def create_model(s):
     elif s == 'Tree':
         clf = tree.DecisionTreeClassifier()
     elif s == 'LinearSVC':
-        clf = svm.LinearSVC(max_iter=4000)
+        clf = svm.LinearSVC()
         #clf = make_pipeline(StandardScaler(),LinearSVC(random_state=0, tol=1e-5,max_iter=2000))
     elif s == 'SVC':
         clf = svm.SVC(kernel='linear')
+    elif s == 'RF':
+        clf = RandomForestClassifier(random_state=0)
     return clf
 
 def get_arguments():
@@ -78,13 +80,13 @@ def get_arguments():
 
 def main():
     global cur_file_id, BoC_size, data_arr, label_arr
-    for i in range(5):
+    for i in range(1):
         load_data()
     print('Data load finished.')
     
-    pca = PCA(n_components=99)
+    #pca = PCA(n_components=99)
     #pca = KernelPCA(n_components=5, kernel='linear')
-    data_arr = pca.fit_transform(data_arr)
+    #data_arr = pca.fit_transform(data_arr)
     #rbf_feature = RBFSampler(gamma=1, random_state=1)
     #data_arr = rbf_feature.fit_transform(data_arr)
    
