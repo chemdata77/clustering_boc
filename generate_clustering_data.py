@@ -7,12 +7,7 @@ from ase import Atoms
 from itertools import combinations
 from ase.db import connect
 from ase.visualize import view
-from sklearn.datasets.samples_generator import make_blobs
-from sklearn import metrics
 from sklearn.cluster import AffinityPropagation
-# Plot result
-import matplotlib.pyplot as plt
-from itertools import cycle
 
 import numpy as np
 import random
@@ -29,7 +24,7 @@ data_dict = {}
 debug = False
 clst_atom_cnt_min = 2
 clst_atom_cnt_max = 4
-max_clst_diameter = 3.5 # A
+max_clst_diameter = 5 # A
 
 clst_sym_lst = [] # list all sym of clst
 
@@ -52,7 +47,7 @@ for clst in clst_sym_lst:
     data_dict[clst] = []
  #print(data_dict)
 
-db = connect('./qm9.db')
+db = connect('./data_3.5/qm9.db')
 # rows = list(db.select('F<1', sort='id')) # 131722 no F molecules
 rows = list(db.select('F=0', sort='id')) # 131722 no F molecules
 random.shuffle(rows)
@@ -119,5 +114,5 @@ for clst_lst in reac_lst:
 
 # print(data_dict)
 import pickle
-with open('/data/bak/qzh/e2e_reaction_test/julei_mini/shuju/data_dict_mini.lst', 'wb') as fp:
+with open('./data_5/data_dict.lst', 'wb') as fp:
     pickle.dump(data_dict, fp)
