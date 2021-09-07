@@ -14,6 +14,7 @@ from sklearn.kernel_approximation import RBFSampler
 import argparse 
 from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
@@ -68,6 +69,8 @@ def create_model(s):
         clf = svm.SVC(kernel='linear')
     elif s == 'RF':
         clf = RandomForestClassifier(random_state=0)
+    elif s == 'xgboost':
+        clf = XGBClassifier()
     return clf
 
 def get_arguments():
