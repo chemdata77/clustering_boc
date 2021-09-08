@@ -10,6 +10,7 @@ from sklearn import svm
 from sklearn import tree
 from sklearn.svm import LinearSVC
 from sklearn.decomposition import PCA, KernelPCA
+from sklearn.manifold import TSNE
 from sklearn.kernel_approximation import RBFSampler
 import argparse 
 from sklearn.model_selection import cross_val_score
@@ -87,12 +88,12 @@ def main():
         load_data()
     print('Data load finished.')
     
-    #pca = PCA(n_components=99)
+    pca = PCA(n_components=99)
     #pca = KernelPCA(n_components=5, kernel='linear')
-    #data_arr = pca.fit_transform(data_arr)
-    #rbf_feature = RBFSampler(gamma=1, random_state=1)
-    #data_arr = rbf_feature.fit_transform(data_arr)
-   
+    data_arr = pca.fit_transform(data_arr)
+    #data_arr = TSNE(n_components=99).fit_transform(data_arr)
+    print(data_arr.shape)
+ 
     train_sets = data_arr[:int(len(data_arr)*0.9)]
     test_sets = data_arr[int(len(data_arr)*0.9):]
     train_labels = label_arr[:int(len(data_arr)*0.9)]
