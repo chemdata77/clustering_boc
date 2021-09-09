@@ -1,14 +1,14 @@
 import pickle
 import h5py
 import numpy as np
-
+from sklearn.decomposition import PCA, KernelPCA 
 import random
 #from sklearn import svm
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
-file_cnt = 5 
+file_cnt = 1 
 step_cnt = 1e6
 
 dataset = None
@@ -19,9 +19,9 @@ for i in range(1, file_cnt+1):
     #with open('dataset.lst', 'rb') as fp:
         #print('start to load data.')
         #dataset = pickle.load(fp)
-    f = h5py.File('./data/meanshift/dataset_new_' + str(i) + '.hdf5', 'r')
+    f = h5py.File('./data/birch/dataset_new_' + str(i) + '.hdf5', 'r')
     print('start to load data.')
-    dataset = f['dset1'][:]
+    dataset = f['dset1'][:1000000]
     print('start to shuffle data.')
     np.random.shuffle(dataset) # the data distribution is not uniform last 10% maybe all 1, so must shuffle here
     zero_cnt = 0
@@ -87,7 +87,7 @@ criterion = nn.CrossEntropyLoss()
 # optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 batch_size = 1024
- 
+data_arr = PCA(n_components = 99).fit_transform(data_arr)
 train_sets = data_arr[:int(len(data_arr)*0.8)]
 vali_sets = data_arr[int(len(data_arr)*0.8): int(len(data_arr)*0.9)]
 test_sets = data_arr[int(len(data_arr)*0.9):]
