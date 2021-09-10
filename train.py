@@ -8,7 +8,7 @@ seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
-file_cnt = 1 
+file_cnt = 5 
 step_cnt = 1e6
 
 dataset = None
@@ -19,7 +19,7 @@ for i in range(1, file_cnt+1):
     #with open('dataset.lst', 'rb') as fp:
         #print('start to load data.')
         #dataset = pickle.load(fp)
-    f = h5py.File('./data/birch/dataset_new_' + str(i) + '.hdf5', 'r')
+    f = h5py.File('./data_3.5/birch/dataset_new_' + str(i) + '.hdf5', 'r')
     print('start to load data.')
     dataset = f['dset1'][:1000000]
     print('start to shuffle data.')
@@ -35,24 +35,30 @@ for i in range(1, file_cnt+1):
         data.append(dataset[j][0:-1])
         label.append(int(dataset[j][-1]))
     print(zero_cnt, 'start to cat data')
+    #pca = PCA(n_components = 99)
+    #data = pca.fit_transform(data)
+    #print(data.shape, sum(pca.explained_variance_ratio_))   
     if i == 1:
         print('input BoC length is: ', len(dataset[0])-1)
         BoC_size = len(dataset[0])-1
-        data_arr = np.zeros((int(file_cnt * step_cnt), BoC_size))
-        
-        label_arr = np.zeros(int(file_cnt * step_cnt), dtype=np.int)
+        #BoC_size = 99
+        #data_arr = np.zeros((int(file_cnt * step_cnt), BoC_size))
+        data_arr = np.array(data, dtype=np.float16)
+        #label_arr = np.zeros(int(file_cnt * step_cnt), dtype=np.int)
+        label_arr = np.array(label)
     else:
         # we have to concat many times due to the memory size reason... although waste so much time
-        pass
-        # data_arr = np.concatenate((data_arr, np.array(data, dtype=np.float32)), axis=0)
-        # label_arr = np.concatenate((label_arr, np.array(label)), axis=0)
-    data_arr[int((i-1)*step_cnt):int(i*step_cnt)] = np.array(data, dtype=np.float32)
-    label_arr[int((i-1)*step_cnt):int(i*step_cnt)] = np.array(label)
-   
+        #pass
+        data_arr = np.concatenate((data_arr, np.array(data, dtype=np.float16)), axis=0)
+        label_arr = np.concatenate((label_arr, np.array(label)), axis=0)
+    #data_arr[int((i-1)*step_cnt):int(i*step_cnt)] = np.array(data, dtype=np.float32)
+    #label_arr[int((i-1)*step_cnt):int(i*step_cnt)] = np.array(label)
+      
     dataset = None
     data = None
     label = None
     print(i, data_arr.shape, label_arr.shape)
+
     f.close()
 
 print('Data load finished.')
@@ -87,7 +93,9 @@ criterion = nn.CrossEntropyLoss()
 # optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 optimizer = optim.Adam(net.parameters(), lr=0.001)
 batch_size = 1024
-data_arr = PCA(n_components = 99).fit_transform(data_arr)
+#pca = PCA(n_components = 99)
+#data_arr = pca.fit_transform(data_arr)
+#print(data_arr.shape,sum(pca.explained_variance_ratio_) )
 train_sets = data_arr[:int(len(data_arr)*0.8)]
 vali_sets = data_arr[int(len(data_arr)*0.8): int(len(data_arr)*0.9)]
 test_sets = data_arr[int(len(data_arr)*0.9):]
@@ -115,7 +123,6 @@ for epoch in range(2000):  # loop over the dataset multiple times
         optimizer.zero_grad()
 
         # forward + backward + optimize
-        # inputs = torch.tensor(inputs, dtype=torch.float32)
         outputs = net(inputs.float())
         
         #print('qqqqqqq',outputs)       
