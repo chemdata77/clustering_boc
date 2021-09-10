@@ -29,13 +29,9 @@ random.seed(seed)
 np.random.seed(seed)
 
 import pickle
-with open("./data_3.5/data_dict.lst", 'rb') as fp:
+with open("/data/qzh/julei/data_dict_mini.lst", 'rb') as fp:
     data_dict = pickle.load(fp)
 #print(len(data_dict))
-for k in data_dict.keys():
-    X = data_dict[k]
-    print(k,len(X))
-print('over')
 def trim_axs(axs, N):
     """little helper to massage the axs list to have correct length..."""
     axs = axs.flat
@@ -60,6 +56,8 @@ for k in data_dict.keys():
     X = data_dict[k]
     if len(X) < 10000:
         continue
+    if len(X)>100000:
+        X = random.sample(X,100000)
     #DBSCAN
     #epsilon(X,10000)
     db = DBSCAN(eps=500, min_samples=500)
