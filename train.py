@@ -43,13 +43,13 @@ for i in range(1, file_cnt+1):
         BoC_size = len(dataset[0])-1
         #BoC_size = 99
         #data_arr = np.zeros((int(file_cnt * step_cnt), BoC_size))
-        data_arr = np.array(data, dtype=np.float16)
+        data_arr = np.array(data, dtype=np.int8)
         #label_arr = np.zeros(int(file_cnt * step_cnt), dtype=np.int)
         label_arr = np.array(label)
     else:
         # we have to concat many times due to the memory size reason... although waste so much time
         #pass
-        data_arr = np.concatenate((data_arr, np.array(data, dtype=np.float16)), axis=0)
+        data_arr = np.concatenate((data_arr, np.array(data, dtype=np.int8)), axis=0)
         label_arr = np.concatenate((label_arr, np.array(label)), axis=0)
     #data_arr[int((i-1)*step_cnt):int(i*step_cnt)] = np.array(data, dtype=np.float32)
     #label_arr[int((i-1)*step_cnt):int(i*step_cnt)] = np.array(label)
