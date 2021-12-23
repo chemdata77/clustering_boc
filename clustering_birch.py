@@ -29,7 +29,7 @@ random.seed(seed)
 np.random.seed(seed)
 
 import pickle
-with open("./data_4/data_dict.lst", 'rb') as fp:
+with open("/data2/qzh/data_3.5/data_dict.lst", 'rb') as fp:
     data_dict = pickle.load(fp)
 #print(len(data_dict))
 
@@ -61,9 +61,9 @@ for k in data_dict.keys():
     #res = []
     best_score = 0
     best_clst_cnts = 2
-    for T in range(1,6):
-        for B in range(50,101):
-            brc = Birch(n_clusters = None,threshold=T/2,branching_factor=B)
+    for T in range(1,5):
+        for B in range(40,101):
+            brc = Birch(n_clusters = None,threshold=T/4,branching_factor=B)
             y_pred = brc.fit_predict(X)
             if len(set(y_pred)) <= 1:
                 continue
@@ -78,7 +78,7 @@ for k in data_dict.keys():
             if patience > 5:
                 break
     print(best_T,best_B)
-    brc = Birch(n_clusters = None,threshold=best_T,branching_factor=best_B)
+    brc = Birch(n_clusters = None,threshold=best_T/4,branching_factor=best_B)
     y_pred = brc.fit_predict(X) 
     print(k, best_T,best_B,best_score, len(brc.subcluster_centers_))
     #fig_data.append(res)
@@ -127,10 +127,10 @@ print(total_clst_cnt)
 
 axs[5].set_ylabel('pair count')
 axs[7].set_xlabel('pair distance, ' + r'$\AA$')
-plt.savefig('./data_4/birch/birch.jpg')
+plt.savefig('/data2/qzh/data_3.5/birch_bestT/birch.jpg')
 plt.show()
 
 #with open('/data/bak/qzh/e2e_reaction_test/julei_mini/shuju/slht_fig_data_02.txt', 'wb') as fp:
     #pickle.dump(fig_data, fp) 
-with open('./data_4/birch/clst_dict_birch.dct', 'wb') as fp:
+with open('/data2/qzh/data_3.5/birch_0.25/clst_dict_birch.dct', 'wb') as fp:
     pickle.dump(clst_dict, fp)
