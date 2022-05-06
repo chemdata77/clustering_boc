@@ -8,7 +8,7 @@ import numpy as np
 from ase.db import connect
 
 import pickle
-with open('./data/meanshift/clst_dict_ms.dct', 'rb') as fp:
+with open("/home/qzh/data_pre/meanshift_0.015q/clst_dict.dct", 'rb') as fp:
     clst_dict = pickle.load(fp)
 
 clst_tuple_list = []
@@ -19,7 +19,7 @@ for k in clst_dict:
 clst_tuple_list = sorted(clst_tuple_list)
 
 #print(clst_tuple_list)
-#print('BoC contain ', len(clst_tuple_list), ' elements.')
+print('BoC contain ', len(clst_tuple_list), ' elements.')
 atom_names = ['H', 'C', 'O', 'N']
 atom_dict = {'H': 0, 'C':1, 'O':2, 'N':3}
 
@@ -69,7 +69,7 @@ def cal_clst_lst(atoms):
 
 qm9_boc_lst = []
 # we can check C2H6 result, if it is the same with the BOC paper 
-db = connect('/data/qzh/qm9.db')
+db = connect("/home/qzh/data_pre/DBSCAN/qm9.db")
 # 16.1% memory usage of a 128G machine
 rows = list(db.select(sort='id'))
 
@@ -92,7 +92,7 @@ pool = multiprocessing.Pool(24)
 qm9_boc_lst = pool.map(multi_thd_func, rows)
 
 import pickle
-with open('./data/meanshift/qm9_id_boc_mini.lst', 'wb') as fp:
+with open('/home/qzh/data_pre/meanshift_0.015q/qm9_id_boc_ms.lst', 'wb') as fp:
     pickle.dump(qm9_boc_lst, fp)
 
 #print('total stored BoC in qm9_boc_lst.txt is: ', len(qm9_boc_lst))

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-# import tensorflow as tf
-# from tensorflow import keras
 import multiprocessing
 import os
 import numpy as np
@@ -22,7 +20,7 @@ import itertools
 #from log import log
 import logging
 
-logging.info('git commit id is: ' + str(os.popen('git --no-pager log -1 --oneline').read()))
+#logging.info('git commit id is: ' + str(os.popen('git --no-pager log -1 --oneline').read()))
 
 seed = 1234
 random.seed(seed)
@@ -48,7 +46,7 @@ H = "enthalpy_H"
 G = "free_energy"
 Cv = "heat_capacity"
 
-db = connect('./qm9.db')
+db = connect('/home/qzh/data/qm9.db')
 # 16.1% memory usage of a 128G machine
 rows = list(db.select(sort='id'))
 # rows = list(db.select('id<200'))
@@ -199,7 +197,7 @@ if __name__ == '__main__':
         reac_lst = reac_lst_1
         print(reac_lst[:5])
     import pickle
-    with open('/data/bak/qzh/e2e_reaction_test/julei_mini/shuju/reactions.txt', 'wb') as fp:
+    with open('/home/qzh/data/reactions_fu.txt', 'wb') as fp:
         pickle.dump(reac_lst, fp)
 
     # with open('reactions.txt', 'rb') as fp:

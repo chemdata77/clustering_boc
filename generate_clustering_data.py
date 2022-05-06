@@ -24,7 +24,7 @@ data_dict = {}
 debug = False
 clst_atom_cnt_min = 2
 clst_atom_cnt_max = 4
-max_clst_diameter = 4 # A
+max_clst_diameter = 3.5 # A
 
 clst_sym_lst = [] # list all sym of clst
 
@@ -47,7 +47,7 @@ for clst in clst_sym_lst:
     data_dict[clst] = []
  #print(data_dict)
 
-db = connect('./data_3.5/qm9.db')
+db = connect('/home/qzh/data/qm9.db')
 # rows = list(db.select('F<1', sort='id')) # 131722 no F molecules
 rows = list(db.select('F=0', sort='id')) # 131722 no F molecules
 random.shuffle(rows)
@@ -114,5 +114,5 @@ for clst_lst in reac_lst:
 
 # print(data_dict)
 import pickle
-with open('./data_5/data_dict.lst', 'wb') as fp:
+with open('/home/qzh/data/data_dict.lst', 'wb') as fp:
     pickle.dump(data_dict, fp)

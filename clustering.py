@@ -20,16 +20,16 @@ from sklearn.cluster import Birch, DBSCAN, KMeans, MeanShift, estimate_bandwidth
 from sklearn.metrics import silhouette_score
 import numpy as np
 import random
-from yellowbrick.cluster import intercluster_distance
-from yellowbrick.cluster import silhouette_visualizer
-from yellowbrick.cluster.elbow import kelbow_visualizer
+#from yellowbrick.cluster import intercluster_distance
+#from yellowbrick.cluster import silhouette_visualizer
+#from yellowbrick.cluster.elbow import kelbow_visualizer
 
 seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
 import pickle
-with open("/data2/qzh/data_3.5/data_dict.lst", 'rb') as fp:
+with open("/home/qzh/data_pre/data_dict.lst", 'rb') as fp:
     data_dict = pickle.load(fp)
 #print(len(data_dict))
 
@@ -52,8 +52,8 @@ ax_idx = 0
 
 clst_dict = {}
 total_clst_cnt = 0
-with open('/data2/qzh/data_3.5/birch_2993/clst_dict_birch.dct', 'rb') as f:
-    birch_dic = pickle.load(f)
+#with open('/data2/qzh/data_3.5/birch_2993/clst_dict_birch.dct', 'rb') as f:
+#    birch_dic = pickle.load(f)
 #fig_data = []
 for k in data_dict.keys():
     patience = 0
@@ -76,34 +76,34 @@ for k in data_dict.keys():
     best_score = 0
     best_clst_cnts = 2
     #res = []
-    #for n_clst in range(2, 100):
-        #if n_clst > 5 and n_clst % 2 == 0:
-            #continue 
-        #km = KMeans(n_clusters=n_clst, random_state=9)
-        #y_pred = km.fit_predict(X)
+    for n_clst in range(2, 100):
+        if n_clst > 5 and n_clst % 2 == 0:
+            continue 
+        km = MiniBatchKMeans(n_clusters=n_clst, random_state=9)
+        y_pred = km.fit_predict(X)
 
         #brc = Birch(n_clusters = n_clst, threshold = 0.3, branching_factor = 50)
         #y_pred = brc.fit_predict(X)
 
         # print(metrics.calinski_harabaz_score(X, y_pred))
-        #slht = metrics.silhouette_score(X, y_pred, sample_size=1000)
+        slht = metrics.silhouette_score(X, y_pred, sample_size=1000)
         #res.append([k, slht])
         # slht = metrics.calinski_harabasz_score(X, y_pred)
-        #if(slht > best_score):
-            #best_score = slht
-            #best_clst_cnts = n_clst
-            #patience = 0
-        #else:
-            #patience += 1
-        #if patience > 5 and n_clst>10:
-            #break
+        if(slht > best_score):
+            best_score = slht
+            best_clst_cnts = n_clst
+            patience = 0
+        else:
+            patience += 1
+        if patience > 5 and n_clst>10:
+            break
         #print('res',res)
-    #print('KM: ', k, best_clst_cnts, best_score, len(X))
+    print('KM: ', k, best_clst_cnts, best_score, len(X))
 
     #print('brc: ', k, best_clst_cnts, best_score, len(X))
-    best_clst_cnts = int(len(birch_dic[k])*1.5)
-    print(k, best_clst_cnts)
-    km = KMeans(n_clusters=best_clst_cnts, random_state=9)
+    #best_clst_cnts = int(len(birch_dic[k])*1.5)
+    #print(k, best_clst_cnts)
+    km = MiniBatchKMeans(n_clusters=best_clst_cnts, random_state=9)
     y_pred = km.fit_predict(X)
     #brc = Birch(n_clusters = best_clst_cnts)
     #y_pred = brc.fit_predict(X)
@@ -126,12 +126,12 @@ for k in data_dict.keys():
            fig_Y[int(x[0]*1000)]+=1
        non_zero_X = [fig_X[i] for i in range(4000)]
        non_zero_Y = [fig_Y[i] for i in range(4000)]
-       ax.set_title(k[0] + '-' + k[1])
+       ax.set_title(k)
        ax.plot(list(np.array(non_zero_X)/1000.0), non_zero_Y)
        # print(results[0][4])
        for i in range(len(clst_dict[k])):
            #plt.axvline(x=clst_dict[0][i][0],ls="-",c="green")#添加垂直直线
-           ax.plot([clst_dict[k][i][0], clst_dict[k][i][0]], [0, max(non_zero_Y)], linestyle=':')
+           ax.plot([clst_dict[k][i][0], clst_dict[k][i][0]], [-max(non_zero_Y)/20, 0], linestyle=':')
        
        
 
@@ -153,12 +153,12 @@ for k in data_dict.keys():
 
 print(total_clst_cnt)
 
-axs[5].set_ylabel('pair count')
-axs[7].set_xlabel('pair distance, ' + r'$\AA$')
-plt.savefig('/data2/qzh/data_3.5/kmeans_1.5/kmeans.jpg')
+#axs[5].set_ylabel('pair count')
+#axs[7].set_xlabel('pair distance, ' + r'$\AA$')
+plt.savefig('/home/qzh/data_pre/2atoms_down/minibatchkmeans111.jpg')
 plt.show()
 
 #with open('/data/bak/qzh/e2e_reaction_test/julei_mini/shuju/slht_fig_data_02.txt', 'wb') as fp:
     #pickle.dump(fig_data, fp) 
-with open('/data2/qzh/data_3.5/kmeans_1.5/clst_dict.dct', 'wb') as fp:
-    pickle.dump(clst_dict, fp)
+#with open('/home/qzh/data/kmeans/clst_dict.dct', 'wb') as fp:
+#    pickle.dump(clst_dict, fp)

@@ -8,7 +8,7 @@ seed = 1234
 random.seed(seed)
 np.random.seed(seed)
 
-file_cnt = 5 
+file_cnt = 55 
 step_cnt = 1e6
 
 dataset = None
@@ -19,7 +19,7 @@ for i in range(1, file_cnt+1):
     #with open('dataset.lst', 'rb') as fp:
         #print('start to load data.')
         #dataset = pickle.load(fp)
-    f = h5py.File('./data_3.5/birch/dataset_new_' + str(i) + '.hdf5', 'r')
+    f = h5py.File('/home/qzh/data_pre/meanshift_0.015q/dataset_new_' + str(i) + '.hdf5', 'r')
     print('start to load data.')
     dataset = f['dset1'][:1000000]
     print('start to shuffle data.')
