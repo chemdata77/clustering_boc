@@ -29,7 +29,7 @@ random.seed(seed)
 np.random.seed(seed)
 
 import pickle
-with open("/data/qzh/julei/data_dict_mini.lst", 'rb') as fp:
+with open("/home/qzh/data_pre/data_dict.lst", 'rb') as fp:
     data_dict = pickle.load(fp)
 #print(len(data_dict))
 def trim_axs(axs, N):
@@ -60,32 +60,34 @@ for k in data_dict.keys():
         X = random.sample(X,100000)
     #DBSCAN
     #epsilon(X,10000)
-    db = DBSCAN(eps=500, min_samples=500)
+    db = DBSCAN(eps=0.05, min_samples=5)
     db.fit(X)
-    print(db.components_)
+    #print(db.components_)
     labels = db.labels_
+    #-1是噪声数据
     n_clust = len(set(labels)) - (1 if -1 in labels else 0)
-    
-    if(len(label_unique) > 1):
-        print('DB: ', k, n_clust, metrics.silhouette_score(X, labels), len(X))
+    print(k,n_clust) 
     ans = []
     for i in range(n_clust):
+        res= []
         for j in range(len(labels)):
             if labels[j] == i:
-                res= []
                 res.append(j)
+                #print(res)
         ans.append(res)
     center = []
     for p in ans:
+        X_km = []
         for q in p:
-            X_km = X[p]
+            X_km.append(X[q])
+        #print(X_km)
 
         km = KMeans(n_clusters=1, random_state=9)
         y_pred = km.fit_predict(X_km)
-        center += km.cluster_centers_
+        center.append(km.cluster_centers_[0])
 
     total_clst_cnt += n_clust
-    clst_dict[k] = center
+    clst_dict[k] = np.array(center)
 
     if len(k) == 2:
         ax = axs[ax_idx]
@@ -96,19 +98,19 @@ for k in data_dict.keys():
             fig_Y[int(x[0]*1000)]+=1
         non_zero_X = [fig_X[i] for i in range(4000)]
         non_zero_Y = [fig_Y[i] for i in range(4000)]
-        ax.set_title(k[0] + '-' + k[1])
+        ax.set_title(k)
         ax.plot(list(np.array(non_zero_X)/1000.0), non_zero_Y)
         # print(results[0][4])
         for i in range(len(clst_dict[k])):
             #plt.axvline(x=clst_dict[0][i][0],ls="-",c="green")
-            ax.plot([clst_dict[k][i][0], clst_dict[k][i][0]], [0, max(non_zero_Y)], linestyle=':')
+            ax.plot([clst_dict[k][i][0], clst_dict[k][i][0]], [-max(non_zero_Y)/20, 0], linestyle=':')
 
 print(total_clst_cnt)
 
-axs[5].set_ylabel('pair count')
-axs[7].set_xlabel('pair distance, ' + r'$\AA$')
-plt.savefig('./data/birch/birch.jpg')
+#axs[5].set_ylabel('pair count')
+#axs[7].set_xlabel('pair distance, ' + r'$\AA$')
+plt.savefig('/home/qzh/data_pre/dbscan_0.05.5/DBSCAN.jpg')
 plt.show()
 
-with open('./data_3.5/dbscan/clst_dict_db.dct', 'wb') as fp:
+with open('/home/qzh/data_pre/dbscan_0.05.5/clst_dict_db.dct', 'wb') as fp:
     pickle.dump(clst_dict, fp)
